@@ -1,18 +1,20 @@
 from fastapi import FastAPI
 
-# 1. Create the App instance
 app = FastAPI()
+# @app.get("/")
+# def home():
+#     return {"message": "Server is running!"}
+# 3 Segments (Most Specific)
+@app.get("/{id}/{se}/add")
+def operation(id: int, se: int):
+    return {"data": id + se}
 
-# 2. Define a "Home" route
-@app.get("/")
-def home():
-    return {
-        "message": "Hala Madrid!", 
-        "status": "Server is live",
-        "version": "0.135.x"
-    }
+# 2 Segments
+@app.get("/{id}/{se}")
+def second(id: int, se: int): # Added 'id' here to prevent errors
+    return {"data": f"Your second number is {se}"}
 
-# 3. Define a "Predictor" route (for your DSA skills)
-@app.get("/sum-check")
-def check_sum(a: int, b: int):
-    return {"result": a + b}
+# 1 Segment (Most General)
+@app.get("/{id}")
+def first(id: int):
+    return {"data": f"Your first number is {id}"}
