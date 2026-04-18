@@ -21,7 +21,7 @@ def get_db():
 def init_db():
     db=SessionLocal()
     for productt in products:
-        db.add(models.ProductDB(**productt.model_dump()))
+        db.add(models.ProductDB(**productt.model_dump())) # 1 & 2 below the full code
     db.commit()
 
 
@@ -85,3 +85,17 @@ def delete_product(id: int, db: Session = Depends(get_db)):
     db.delete(db_product)
     db.commit()
     return {"message": "Product deleted successfully"}
+
+
+# 1. productt.model_dump() (The Translator)
+# Before this line, your data is inside a Pydantic model (the ProductSchema). Think of this like a specialized container that is great for checking errors but the database doesn't understand it.
+# What happens: .model_dump() takes that container and "dumps" the data into a standard Python Dictionary.
+# The Result: It turns your object into this: {"id": 1, "type": "abc"}
+
+
+# 2. #The ** (The Unpacker)
+# This is called the "Spread" or "Unpacking" operator. It’s a shortcut so you don't have to type everything manually.
+# Without **: You would have to write:
+# models.ProductDB(id=dictionary["id"], type=dictionary["type"])
+# With **: It automatically takes the Keys (id, type) and Values (1, "abc") from the dictionary and lays them out perfectly for the next step.
+# The Result: It prepares the command to look like this: ProductDB(id=1, type="abc")
